@@ -14,7 +14,15 @@ async def read_root(request: Request):
 
 @app.get("/length", response_class=HTMLResponse)
 async def read_root(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request, "message": "Length"})
+    return templates.TemplateResponse("length.html", {"request": request, "message": "Length"})
+
+@app.get("/weight", response_class=HTMLResponse)
+async def read_root(request: Request):
+    return templates.TemplateResponse("weight.html", {"request": request, "message": "weight"})
+
+@app.get("/temperature", response_class=HTMLResponse)
+async def read_root(request: Request):
+    return templates.TemplateResponse("temperature.html", {"request": request, "message": "temperature"})
 
 if __name__ == "__main__":
     import uvicorn
