@@ -9,89 +9,141 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
-    <style id="dark-mode-style">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- <link href="/static/styles.css" rel="stylesheet"> -->
+    <style>
         /* dark-mode.css */
-        body {
+        body.dark-mode {
             background-color: #121212;
             color: #ffffff;
         }
 
-        .navbar,
-        .card {
+        body.dark-mode .navbar,
+        body.dark-mode .card {
             background-color: #1f1f1f;
             border-color: #333333;
         }
 
-        .btn-primary {
+        body.dark-mode .btn-primary {
             background-color: #bb86fc;
             border-color: #bb86fc;
         }
-    </style>
-    <style id="light-mode-style">
+
+        body.dark-mode .navbar,
+        body.dark-mode .navbar a,
+        body.dark-mode .navbar-brand,
+        body.dark-mode .nav-link,
+        body.dark-mode .card {
+            color: #ffffff;
+        }
+
+
         /* light-mode.css */
-        body {
+        body.light-mode {
             background-color: #ffffff;
             color: #000000;
         }
 
-        .navbar,
-        .card {
+        body.light-mode .navbar,
+        body.light-mode .card {
             background-color: #f8f9fa;
             border-color: #dee2e6;
         }
 
-        .btn-primary {
+        body.light-mode .btn-primary {
             background-color: #007bff;
             border-color: #007bff;
+        }
+
+        body.light-mode .navbar,
+        body.light-mode .navbar a,
+        body.light-mode .navbar-brand,
+        body.light-mode .nav-link,
+        body.light-mode .card {
+            color: #000000;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            /* Center horizontally */
+            align-items: center;
+            /* Center vertically */
+        }
+
+        .card {
+            border: none;
+            /* Remove the border */
         }
     </style>
     <title>Unit Converter</title>
 </head>
 
-<body>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+<body class="dark-mode">
+    <nav class="navbar navbar-expand-lg ">
         <div class="container-fluid">
-          <a class="navbar-brand" href="/">Unit Converter</a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link" href="/length">Length</a>
-                  </li>  
-              <li class="nav-item">
-                <a class="nav-link" href="/weight">Weight</a>
-              </li>  
-              <li class="nav-item">
-                <a class="nav-link" href="/temperature">Temperature</a>
-              </li>             
-            </ul>
-            <div class="d-flex" >
-                <button id="toggle-dark-mode" class="btn btn-primary mt-3">Toggle Mode</button>
+            <a class="navbar-brand" href="/">Unit Converter</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/length">Length</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/weight">Weight</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/temperature">Temperature</a>
+                    </li>
+                </ul>
+                <div class="d-flex">
+                    <button id="toggle-dark-mode" class="btn btn-primary mt-3" data-bs-toggle="tooltip"
+                        title="Toggle dark/light mode">
+                        <i class="bi bi-sun"></i>
+                    </button>
+                </div>
             </div>
-          </div>
         </div>
-      </nav>
+    </nav>
     <main>
         {% block content %}{% endblock %}
     </main>
     <script>
         document.getElementById('toggle-dark-mode').addEventListener('click', function () {
-            var darkModeStyle = document.getElementById('dark-mode-style');
-            var lightModeStyle = document.getElementById('light-mode-style');
-            if (darkModeStyle.disabled) {
-                darkModeStyle.disabled = false;
-                lightModeStyle.disabled = true;
+            var body = document.body;
+            if (body.classList.contains('dark-mode')) {
+                body.classList.remove('dark-mode');
+                body.classList.add('light-mode');
+                this.innerHTML = '<i class="bi bi-moon"></i>';
+                localStorage.setItem('theme', 'light-mode');
             } else {
-                darkModeStyle.disabled = true;
-                lightModeStyle.disabled = false;
+                body.classList.remove('light-mode');
+                body.classList.add('dark-mode');
+                this.innerHTML = '<i class="bi bi-sun"></i>';
+                localStorage.setItem('theme', 'dark-mode');
             }
         });
 
-        // Initially enable dark mode styles and disable light mode styles
-        document.getElementById('dark-mode-style').disabled = false;
-        document.getElementById('light-mode-style').disabled = true;
+        window.onload = function () {
+            // Check the saved theme in localStorage and apply it
+            var savedTheme = localStorage.getItem('theme') || 'dark-mode';
+            document.body.classList.add(savedTheme);
+            if (savedTheme === 'dark-mode') {
+                document.getElementById('toggle-dark-mode').innerHTML = '<i class="bi bi-sun"></i>';
+            } else {
+                document.getElementById('toggle-dark-mode').innerHTML = '<i class="bi bi-moon"></i>';
+            }
+
+            // Initialize tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        };
     </script>
 </body>
 

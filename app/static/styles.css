@@ -1,0 +1,63 @@
+/* dark-mode.css */
+body.dark-mode {
+    background-color: #121212;
+    color: #ffffff;
+}
+
+body.dark-mode .navbar,
+body.dark-mode .card {
+    background-color: #1f1f1f;
+    border-color: #333333;
+}
+
+body.dark-mode .btn-primary {
+    background-color: #bb86fc;
+    border-color: #bb86fc;
+}
+
+body.dark-mode .navbar,
+body.dark-mode .navbar a,
+body.dark-mode .navbar-brand,
+body.dark-mode .nav-link,
+body.dark-mode .card {
+    color: #ffffff;
+}
+
+
+/* light-mode.css */
+body.light-mode {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+body.light-mode .navbar,
+body.light-mode .card {
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+}
+
+body.light-mode .btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+body.light-mode .navbar,
+body.light-mode .navbar a,
+body.light-mode .navbar-brand,
+body.light-mode .nav-link,
+body.light-mode .card {
+    color: #000000;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    /* Center horizontally */
+    align-items: center;
+    /* Center vertically */
+}
+
+.card {
+    border: none;
+    /* Remove the border */
+}
