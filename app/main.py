@@ -14,15 +14,15 @@ templates = Jinja2Templates(directory="templates")
 # Routes
 @app.get("/", response_class=HTMLResponse)
 async def read_root(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request, "message": "Homepage"})
+    return templates.TemplateResponse("index.html", {"request": request})
 
 @app.get("/length", response_class=HTMLResponse)
-async def read_root(request: Request):
-    return templates.TemplateResponse("length.html", {"request": request, "message": "Length"})
+async def read_roott(request: Request, result: str = Query(""), error: str = Query("")):
+    return templates.TemplateResponse("length.html", {"request": request, "result": result, "error": error})
 
 @app.get("/weight", response_class=HTMLResponse)
-async def read_root(request: Request):
-    return templates.TemplateResponse("weight.html", {"request": request, "message": "weight"})
+async def read_weight(request: Request, result: str = Query(""), error: str = Query("")):
+    return templates.TemplateResponse("weight.html", {"request": request, "result": result, "error": error})
 
 @app.get("/temperature", response_class=HTMLResponse)
 async def read_temperature(request: Request, result: str = Query(""), error: str = Query("")):
@@ -42,17 +42,16 @@ async def convert(request: Request, input_value: float = Form(...), convert_to: 
     elif convert_to in ["feet", "meters", "kilometers","miles"] or convert_from in ["feet", "meters", "kilometers","miles"]:
         try:    
             converted_value = convert_length(input_value, convert_to, convert_from)
-            return templates.TemplateResponse("length.html", {"request": request, "result": converted_value})
+            return RedirectResponse(url=f"/length?result={converted_value}", status_code=303)
         except Exception as e:
-            return templates.TemplateResponse("length.html", {"request": request, "error_message": f"Conversion failed: {e}"})
+            return RedirectResponse(url=f"/length?error={f"Conversion failed: {e}"}", status_code=303)
     # weight
     elif convert_to in ["ounce", "pound", "milligram","gram","kilogram"] or convert_from in ["ounce", "pound", "milligram","gram","kilogram"]:
         try:    
             converted_value = convert_weight(input_value, convert_to, convert_from)
-            return templates.TemplateResponse("weight.html", {"request": request, "result": converted_value})
+            return RedirectResponse(url=f"/weight?result={converted_value}", status_code=303)
         except Exception as e:
-            return templates.TemplateResponse("weight.html", {"request": request, "error_message": f"Conversion failed: {e}"})
-    
+            return RedirectResponse(url=f"/weight?error={f"Conversion failed: {e}"}", status_code=303)
     else:
         raise HTTPException(status_code=400, detail="Invalid conversion types")
 
