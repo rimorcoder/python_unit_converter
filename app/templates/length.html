@@ -1,5 +1,47 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>{{ message }}</h1>
+<div class="container m-5">
+    <form method="post" action="/convert">
+        <div class="mb-3">
+            <label class="form-label" for="value">Input:</label>
+            <input class="form-control" type="number" step="any" id="value" name="input_value" required
+                aria-label="Value to convert">
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="from_unit">Convert from:</label>
+            <select class="form-select" id="from_unit" name="convert_from" required aria-label="Unit to convert from">
+
+                <option value="feet">Feet</option>
+                <option value="meters">Meters</option>
+                <option value="kilometers">Kilometers</option>
+                <option value="miles">Miles</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="to_unit">Convert to:</label>
+            <select class="form-select" id="to_unit" name="convert_to" required aria-label="Unit to convert to">
+                <option value="meters">Meters</option>
+                <option value="kilometers">Kilometers</option>
+                <option value="miles">Miles</option>
+                <option value="feet">Feet</option>
+            </select>
+        </div>
+        <button type="submit" aria-label="Convert units">Convert</button>
+    </form>
+</div>
+
+<div class="container m-5">
+    {% if error_message %}
+    <div class="alert alert-danger" role="alert">
+        {{ error_message }}
+    </div>
+    {% endif %}
+
+    {% if result is not none %}
+    <div class="alert alert-success" role="alert">
+        Conversion Result: {{ result }}
+    </div>
+    {% endif %}
+</div>
 {% endblock %}
