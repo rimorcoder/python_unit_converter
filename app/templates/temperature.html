@@ -30,13 +30,13 @@
 </div>
 
 <div class="container m-5">
-    {% if error_message %}
+    {% if error %}
     <div class="alert alert-danger" role="alert">
-        {{ error_message }}
+        {{ error }}
     </div>
     {% endif %}
 
-    {% if result is not none %}
+    {% if result %}
     <div class="alert alert-success" role="alert">
         Conversion Result: {{ result }}
     </div>

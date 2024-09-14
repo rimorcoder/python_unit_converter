@@ -1,5 +1,5 @@
-from fastapi import FastAPI, Form, HTTPException
-from fastapi.responses import HTMLResponse
+from fastapi import FastAPI, Form, HTTPException, Query
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.requests import Request
@@ -25,8 +25,8 @@ async def read_root(request: Request):
     return templates.TemplateResponse("weight.html", {"request": request, "message": "weight"})
 
 @app.get("/temperature", response_class=HTMLResponse)
-async def read_root(request: Request):
-    return templates.TemplateResponse("temperature.html", {"request": request, "message": "temperature"})
+async def read_temperature(request: Request, result: str = Query(""), error: str = Query("")):
+    return templates.TemplateResponse("temperature.html", {"request": request, "result": result, "error": error})
 
 @app.post("/convert", response_class=HTMLResponse)
 async def convert(request: Request, input_value: float = Form(...), convert_to: str = Form(...), convert_from: str = Form(...)):
@@ -35,9 +35,9 @@ async def convert(request: Request, input_value: float = Form(...), convert_to: 
     if convert_to in ["celsius", "fahrenheit", "kelvin"] or convert_from in ["celsius", "fahrenheit", "kelvin"]:
         try:    
             converted_value = convert_temperature(input_value, convert_to, convert_from)
-            return templates.TemplateResponse("temperature.html", {"request": request, "result": converted_value})
+            return RedirectResponse(url=f"/temperature?result={converted_value}", status_code=303)
         except Exception as e:
-            return templates.TemplateResponse("temperature.html", {"request": request, "error_message": f"Conversion failed: {e}"})
+            return RedirectResponse(url=f"/temperature?error={f"Conversion failed: {e}"}", status_code=303)
     # length
     elif convert_to in ["feet", "meters", "kilometers","miles"] or convert_from in ["feet", "meters", "kilometers","miles"]:
         try:    
@@ -55,6 +55,8 @@ async def convert(request: Request, input_value: float = Form(...), convert_to: 
     
     else:
         raise HTTPException(status_code=400, detail="Invalid conversion types")
+
+
 # Convervsion Functions
 def convert_temperature(value: float, to_unit: str, from_unit: str) -> float:
     if from_unit == to_unit:
