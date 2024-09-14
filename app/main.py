@@ -45,6 +45,14 @@ async def convert(request: Request, input_value: float = Form(...), convert_to: 
             return templates.TemplateResponse("length.html", {"request": request, "result": converted_value})
         except Exception as e:
             return templates.TemplateResponse("length.html", {"request": request, "error_message": f"Conversion failed: {e}"})
+    # weight
+    elif convert_to in ["ounce", "pound", "milligram","gram","kilogram"] or convert_from in ["ounce", "pound", "milligram","gram","kilogram"]:
+        try:    
+            converted_value = convert_weight(input_value, convert_to, convert_from)
+            return templates.TemplateResponse("weight.html", {"request": request, "result": converted_value})
+        except Exception as e:
+            return templates.TemplateResponse("weight.html", {"request": request, "error_message": f"Conversion failed: {e}"})
+    
     else:
         raise HTTPException(status_code=400, detail="Invalid conversion types")
 # Convervsion Functions
@@ -91,6 +99,26 @@ def convert_length(value: float, to_unit: str, from_unit: str) -> float:
 
     # Convert from meters to the target unit
     converted_value = meters_value / conversion_factors_to_meters[to_unit]
+
+    return converted_value
+
+def convert_weight(value: float, from_unit: str, to_unit: str) -> float:
+    conversion_factors = {
+        "ounce": 1,
+        "pound": 16,
+        "milligram": 28349.5,
+        "gram": 28.3495,
+        "kilogram": 0.0283495
+    }
+
+    if from_unit not in conversion_factors or to_unit not in conversion_factors:
+        raise ValueError("Invalid unit provided")
+
+    # Convert the value to ounces first
+    value_in_ounces = value / conversion_factors[from_unit]
+
+    # Convert from ounces to the target unit
+    converted_value = value_in_ounces * conversion_factors[to_unit]
 
     return converted_value
 
